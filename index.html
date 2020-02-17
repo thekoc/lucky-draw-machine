@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
+    <title>小小抽奖机</title>
+</head>
+
+<body>
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#" id="index-button">tiny little slot machine</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" id="settings-button">Settings</a></li>
+        </ul>
+
+    </div>
+</div>
+
+<div class="container" id="slot-machine-page">
+
+    <div class="row head-row">
+            <div class="slot-machine-title-container">
+            <h1 style="text-align: center;" id="title">小小抽奖机</h1>
+            </div>
+    </div>
+
+    <div class="row slot-machine-row">
+        <div id="slot-machine-container">
+            <slot-machine
+                    :column_list="column_list" :speeds="speeds"
+                    :max_column_length="max_column_length" :get_name_list="get_name_list" :get_prize_list="get_prize_list"
+                    @audio="audio_handler" @save="save_handler"
+            ></slot-machine>
+        </div>
+    </div>
+
+    <div class="row button-row">
+
+    </div>
+</div>
+
+<div class="container" id="settings-page">
+    <div class="row head-row">
+        <div class="col-md-12">
+            <h1 style="text-align: center;">Settings</h1>
+        </div>
+    </div>
+
+
+    <div class="row title-setting-row" style="margin-bottom: 30px">
+        <div class="col-md-12">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title-input" placeholder="小小抽奖机">
+        </div>
+    </div>
+
+    <div class="row prize-setting-row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Prize Setting</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="color: darkgrey">奖项名字 / 奖项数量</span>
+                    <a href="#" class="pull-right"
+                       data-toggle="collapse" data-target="#prize-setting-list"
+                       aria-expanded="true" aria-controls="prize-setting-list">hide/show</a>
+                </div>
+            </div>
+
+            <div class="row collapse in" id="prize-setting-list">
+                <div class="col-md-12">
+                    <div id="prize-list-ctrl">
+                        <list-control :prize_list="prize_list" @delete_row="delete_row" @change_row="change_row" @add_new_row="add_new_row"></list-control>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row" id="name-setting-row" style="margin-bottom: 30px">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Name List</label>
+                        <span class="glyphicon glyphicon-question-sign" data-html="true" data-toggle="tooltip"
+                              title="Format should be like:<br>name1<br>name2<br>...<br>If the the amount of names is too large, please create it from file to prevent this app from not responding."></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-primary" id="create-from-file-button">Create From File</button>
+                    <input type='file' style="display: none" id="file-input" multiple/>
+                    <button type="button" class="btn btn-info" id="edit-name-list-button">Edit Bulk</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row" id="other-options-row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Other Options</label>
+                </div>
+            </div>
+            <div class="row">
+                <div id="speed-setting">
+                    <div class="col-sm-6">
+                        <div class="input-group speed-input">
+                            <span class="input-group-addon">滚动速度</span>
+                            <input type="text" class="form-control" placeholder="10" v-model="animation_speed">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group speed-input">
+                            <span class="input-group-addon">停止速度</span>
+                            <input type="text" class="form-control" placeholder="1" v-model="stop_speed">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 音效
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="edit-name-list-modal" data-backdrop="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Edit Bulk</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please use enter to separate different names. Use "Create From File" instead if the amount is too large.</p>
+                    <textarea id="name-list-edit-textarea" class="form-control" style="min-height: 300px; max-width: 100%"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save-name-list-button">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.min');</script>
+<script>window._ = require('./node_modules/underscore/underscore-min');</script>
+
+<script> require("./node_modules/bootstrap/dist/js/bootstrap.min"); </script>
+<script> window.Vue = require("./node_modules/vue/dist/vue.min"); </script>
+<link href="./bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="./bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script> require('./index') </script>
+</body>
+
+</html>
