@@ -11,7 +11,7 @@ $(document).ready(() => {
     $("#title-input").change(() => {
         let text_data = $("#title-input").val();
         if (text_data.replace(/(^\s*)|(\s*$)/g, "").length === 0) {
-            $("#title").text("小小抽奖机");
+            $("#title").text("Little Drawing Machine");
         } else {
             $("#title").text(text_data);
         }
@@ -54,7 +54,7 @@ $(document).ready(() => {
         props: ['prize_list'],
         template: '<ul class="list-group">' +
         '<button type="button" class="list-group-item" @click="add_new_row">' +
-        '<span class="glyphicon glyphicon-plus pull-right"></span>添加新的奖项' +
+        '<span class="glyphicon glyphicon-plus pull-right"></span>Add new prize' +
         '</button>' +
         '<table class="table table-bordered table-striped">' +
         '<tbody>' +

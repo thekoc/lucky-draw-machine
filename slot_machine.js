@@ -119,9 +119,9 @@ Vue.component('slot-machine', {
     '<button class="round-button slot-machine-button" @click="reset_button_handler">RESET</button>' +
         '</div>' +
         '<div class="follow-prizes-container">' +
-        '<h2>下面的奖项: </h2>' +
+        '<h2>Next prize: </h2>' +
         '<transition-group name="prizes" tag="div" style="position: relative; transition: all 1s;" :style="{height: prize_list_height}">' +
-        '<div v-if="residual_prize_list.length === 0" class="prizes-item no-more-item" :key="0"><span>没有更多奖项了</span><a @click="save_result"">保存结果</a></div>' +
+        '<div v-if="residual_prize_list.length === 0" class="prizes-item no-more-item" :key="0"><span>No available prize</span><a @click="save_result"">Save the result</a></div>' +
         '<div v-for="prize in residual_prize_list" :key="prize.id" class="prizes-item">' +
             '{{ prize.name }}' +
         '</div>' +
@@ -137,8 +137,8 @@ Vue.component('slot-machine', {
             column_num: 5,
             state: {'waiting': false, 'running': true},
             stopped_column_num: 0,
-            prize_title_value: '你好, 陌生人! 按一下 RESET 看看?',
-            fake_title_value: '你好, 陌生人! 按一下 RESET 看看?',
+            prize_title_value: 'Hi! Please Press RESET button!',
+            fake_title_value: 'Hi! Please Press RESET button!',
             this_turn: {
                 winner: undefined,
                 prize: undefined
@@ -266,15 +266,15 @@ Vue.component('slot-machine', {
                 this.residual_prize_list = this.residual_prize_list.slice(1);
                 this.this_turn.prize = prize;
                 this.button.disabled = false;
-                this.prize_title = '奖项: ' + prize;
+                this.prize_title = 'Prize: ' + prize;
                 this.restart();
                 this.column_list = this.get_new_column_list();
                 this.win_history.push({prize: this.this_turn.prize, winner: this.this_turn.winner});
             } else {
                 if (this.get_prize_list().length <= 0) {
-                    this.prize_title = '没有可用的奖项, 点一下右上角的设置按钮, 试试添加奖项?'
+                    this.prize_title = 'No available prize configured. You can add new in the setting panel'
                 } else {
-                    this.prize_title = '没有奖项可以抽取了, 按一下 RESET?';
+                    this.prize_title = 'No remaining prize. Please press RESET button';
                 }
                 this.button.disabled = true;
             }
@@ -310,7 +310,7 @@ Vue.component('slot-machine', {
             this.stopped_column_num += 1;
             this.$emit('audio', 'stop');
             if (this.stopped_column_num === this.column_num) {
-                this.prize_title = this.this_turn.winner + ' 赢得了 ' + this.this_turn.prize;
+                this.prize_title = this.this_turn.winner + ' won ' + this.this_turn.prize;
                 this.button.disabled = false;
             }
         },
@@ -371,7 +371,7 @@ let slot_machine = new Vue({
                 }
             }
             if (result_list.length > 0) {
-                remote.dialog.showSaveDialog({title: '选择一个位置保存抽奖结果'}, save_file);
+                remote.dialog.showSaveDialog({title: 'Select where to save the result'}, save_file);
             }
         }
     }
